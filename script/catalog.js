@@ -1,4 +1,8 @@
+import { getData } from "./getData.js";
+import generateSubCatalog from "./generateSubCatalog.js";
+
 export const catalog = () => {
+  const updateSubCatalog = generateSubCatalog();
   const btnBurger = document.querySelector(".btn-burger");
   const catalog = document.querySelector(".catalog");
   const btnClose = document.querySelector(".btn-close");
@@ -23,8 +27,10 @@ export const catalog = () => {
     const target = event.target;
     const itemList = target.closest(".catalog-list__item");
     if (itemList) {
-      subCatalogHeader.innerHTML = itemList.innerHTML;
-      subCatalog.classList.add("subopen");
+      getData.subCatalog(target.textContent, (data) => {
+        updateSubCatalog(target.textContent, data);
+        subCatalog.classList.add("subopen");
+      });
     }
   };
   const closeSubMenu = () => {
@@ -35,5 +41,8 @@ export const catalog = () => {
   btnClose.addEventListener("click", closeMenu);
   overlay.addEventListener("click", closeMenu);
   catalog.addEventListener("click", openSubMenu);
-  btnReturn.addEventListener("click", closeSubMenu);
-}
+  subCatalog.addEventListener("click", (event) => {
+    const btnReturn = event.target.closest(".btn-return");
+    if (btnReturn) closeSubMenu();
+  });
+};
